@@ -85,8 +85,8 @@ public class GreenfootImage extends Texture {
 		if (img.dim.height + y > dim.height) {
 			choppedHeight = dim.height - x;
 		}
-		ByteBuffer choppedBuf = LUtils.chopBuffer(img.buf, choppedWidth,
-				choppedHeight, 4);
+		ByteBuffer choppedBuf = LUtils.chopBuffer(img.buf, img.dim,
+				choppedWidth, choppedHeight, 4);
 		GL11.glTexSubImage2D(GL_TEXTURE_2D, 0, x, y, choppedWidth,
 				choppedHeight, GL11.GL_RGBA, GL11.GL_UNSIGNED_BYTE, choppedBuf);
 	}
