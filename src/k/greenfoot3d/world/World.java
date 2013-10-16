@@ -2,6 +2,8 @@ package k.greenfoot3d.world;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 
 import k.greenfoot3d.actors.Actor;
@@ -15,7 +17,7 @@ import crashcourse.k.library.main.KMain;
 
 public abstract class World extends KMain {
 	private List<Class<?>> actOrder = new ArrayList<Class<?>>();
-	private List<Actor> actors = new ArrayList<Actor>();
+	private HashMap<Class<?>, ArrayList<Actor>> actors = new HashMap<Class<?>, ArrayList<Actor>>();
 
 	public World(int cellsX, int cellsY, int cellSize) {
 		this(cellsX, cellsY, cellSize, true);
@@ -34,6 +36,7 @@ public abstract class World extends KMain {
 	}
 
 	public void start() {
+		setActOrder(World.class);
 		while (!Display.isCloseRequested()) {
 			try {
 				DisplayLayer.loop(120);
@@ -56,12 +59,14 @@ public abstract class World extends KMain {
 	}
 
 	private void subAct(int delta) {
+		ArrayList<Class<?>> actedOn = new ArrayList<Class<?>>();
 		for (Class<?> c : actOrder) {
 			if (c.isInstance(this)) {
 				act();
 			} else {
 				multiAct(c);
 			}
+			actedOn.add(c);
 		}
 	}
 
@@ -72,14 +77,8 @@ public abstract class World extends KMain {
 		}
 	}
 
-	private List<Actor> getObjects(Class<?> c) {
-		List<Actor> ret = new ArrayList<Actor>();
-		for (Actor a : actors) {
-			if (c.isInstance(a)) {
-				ret.add(a);
-			}
-		}
-		return ret;
+	public List<Actor> getObjects(Class<?> c) {
+		return new ArrayList<Actor>(actors.get(c));
 	}
 
 	public void act() {
